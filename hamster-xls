@@ -146,20 +146,22 @@ def main():
     date_style.num_format_str = 'YYYY-MM-DD' # excel date format
 
     # Write out the header
-    writeRow(sheet, ['Date', 'Hours', 'Project', 'Task', 'Comment', 'Tags'], style=header_style)
+    writeRow(sheet, ['Date', 'Start', 'Stop', 'Hours', 'Project', 'Task', 'Comment', 'Tags'], style=header_style)
 
     # Iterate over the hamster data for the requested time span
     seconds_per_day = (60 * 60 * 24)
     for row_index, fact in enumerate(iterateFacts(storage, args), 1):
         project = fact.category
         date = fact.date
+        start_time = fact.start_time
+        end_time = fact.end_time
         hours = fact.delta.total_seconds() / seconds_per_day # this produces a decimal day
         task = fact.activity
         comment = fact.description
         tags = ', '.join(fact.tags)
 
         # write out the row to the spreadsheet
-        writeRow(sheet, [(date, date_style), (hours, hour_style), project, task, comment, tags], row_index)
+        writeRow(sheet, [(date, date_style), (start_time, hour_style), (end_time, hour_style), (hours, hour_style), project, task, comment, tags], row_index)
 
     # save the workbook to the output file
     wbk.save(args.output)
